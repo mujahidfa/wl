@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <regex>
 using namespace std;
 
 /**
@@ -24,6 +25,35 @@ string &removeWhitespace(string &str)
     return str;
 }
 
+string &lowercase(string &str)
+{
+    return str;
+}
+
+vector<string> tokenize(const string stringToTokenize)
+{
+    // vector<string> tokens;
+    // string token;
+    // stringstream tokenStream(s);
+    // while (getline(tokenStream, token, delimiter))
+    // {
+    //     tokens.push_back(token);
+    // }
+    // return tokens;
+
+    vector<string> tokens;
+
+    regex whitespaceRegex("[\r\v\n\t\f ]+");
+    sregex_token_iterator iterator(stringToTokenize.begin(), stringToTokenize.end(), whitespaceRegex, -1);
+    sregex_token_iterator regex_end;
+    while (iterator != regex_end)
+    {
+        tokens.push_back(iterator->str());
+    }
+
+    return tokens;
+}
+
 int main()
 {
     string command;
@@ -31,7 +61,34 @@ int main()
     {
         cout << ">";
         getline(cin, command); // enable Enter key capture
-        cout << "The command you entered is: " << command << endl;
+
+        // Returns first token
+        vector<string> tokenizedCommandLine = tokenize(command);
+        string firstCommand = tokenizedCommandLine[0];
+
+        if (firstCommand.compare("load") == 0)
+        {
+        }
+        else if (firstCommand.compare("locate") == 0)
+        {
+        }
+        else if (firstCommand.compare("new") == 0)
+        {
+        }
+        else if (firstCommand.compare("end") == 0)
+        {
+            // do nothing
+        }
+        else if (firstCommand.compare("") == 0) // capture empty command
+        {
+            /* code */
+        }
+        else // bad command
+        {
+            cout << "ERROR: Invalid command”" << endl;
+        }
+
+        // cout << "The command you entered is: " << command << endl;
     }
     cout << "Out of while loop" << endl;
     return 0;
