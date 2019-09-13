@@ -4,6 +4,7 @@
 //  UW Campus ID: 9075332602
 //  email: fakhrulanuar@wisc.edu
 
+#include "wl.h"
 #include <iostream>
 #include <string>
 #include <regex>
@@ -202,25 +203,25 @@ int main()
                 // if a file was loaded, then we can do our search
                 else
                 {
-                    int userInputtedOccurance = stoi(commands[2]); /// get the user-inputted nth occurance for the searched word
-                    int currPosition = 1; // to keep track of the current position of the iterator
+                    int userInputtedOccurance = stoi(commands[2]); // get the user-inputted nth occurance for the searched word
+                    int currPosition = 1;                          // to keep track of the current position of the iterator
 
                     unordered_multimap<string, int>::iterator itr = wordList.find(commands[1]);
                     if (itr != wordList.end())
-                    { 
+                    {
                         // get how many times does the searched word appear in the text
                         int wordCountInText = wordList.count(commands[1]);
-                        
+
                         while (itr != wordList.end())
-                        {   
+                        {
                             // If not found matching occurance.
                             //
-                            // Explanation: 
-                            //  When the current position of the iterator exceeds the number 
+                            // Explanation:
+                            //  When the current position of the iterator exceeds the number
                             //  of times the word actually appears in the text, that tells us that
                             //  the nth occurance that the user requested is more than the amount
                             //  of times the word has appeared/occured in the text. Which tells us
-                            //  that the word does not exist in the nth occurance 
+                            //  that the word does not exist in the nth occurance
                             //  (specified in userInputtedOccurance).
                             if (currPosition > wordCountInText)
                             {
