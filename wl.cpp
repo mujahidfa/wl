@@ -132,7 +132,7 @@ int main()
 
             if (!inputFile)
             {
-                cout << "Unable to open file" << endl;
+                cout << "ERROR: Invalid command" << endl;
             }
             else
             {
@@ -141,7 +141,7 @@ int main()
 
                 while (getline(inputFile, currLine))
                 {
-                    cout << currLine << endl;
+                    // cout << currLine << endl; // for debugging purposes
 
                     // if line is empty, skip
                     if (currLine.empty())
@@ -161,15 +161,16 @@ int main()
                     }
                 }
 
+                isLoaded = true;
                 inputFile.close();
             }
 
             // print line, for debugging purposes
-            for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
-            {
-                cout << itr->first << '\t';
-                cout << itr->second << endl;
-            }
+            // for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
+            // {
+            //     cout << itr->first << '\t';
+            //     cout << itr->second << endl;
+            // }
         }
 
         // The "locate" command, given a word, returns the position of the
@@ -177,25 +178,58 @@ int main()
         // It can only take 2 arguments.
         else if (firstCommand.compare("locate") == 0 && commands.size() == 3)
         {
-            if (isValidWord(commands[1]) == true)
+            // check if the 2nd argument and 3rd argument are not valid
+            if (isValidWord(commands[1]) == false)
             {
-                cout << "Word is valid" << endl;
+                cout << "ERROR: Invalid command" << endl;
             }
+            else if (isValidNumber(commands[2]) == false)
+            {
+                cout << "ERROR: Invalid command" << endl;
+            }
+            // if the 2nd argument and 3rd argument are valid,
             else
             {
-                cout << "ERROR: Word not valid!!" << endl;
+                // check if a file was loaded
+                if (isLoaded == false)
+                {
+                    cout << "No matching entry" << endl;
+                }
+                // if a file was loaded, then we can do our search
+                else
+                {
+                    int occurance = stoi(commands[2]);
+                    int count = 1;
+
+                    unordered_multimap<string, int>::iterator itr = wordList.find(commands[1]);
+                    if (itr != wordList.end())
+                    {
+                        while (itr != wordList.end())
+                        {
+                            // if not found matching occurance
+                            if (count > wordList.count(commands[1]))
+                            {
+                                cout << "No matching entry" << endl;
+                                break;
+                            }
+
+                            // if found matching occurance
+                            if (count == occurance)
+                            {
+                                // cout << itr->first << " "; // for debugging purposes
+                                cout << itr->second << endl;
+                                break;
+                            }
+                            count++;
+                            itr++;
+                        }
+                    }
+                    else
+                    {
+                        cout << "No matching entry" << endl;
+                    }
+                }
             }
-            if (isValidNumber(commands[2]) == true)
-            {
-                cout << "Occurance is valid" << endl;
-            }
-            else
-            {
-                cout << "ERROR: Occurance not valid!!" << endl;
-            }
-            // if (isLoaded == false)
-            // {
-            // }
         }
 
         // The "new" command resets the word list to original (empty) state.
@@ -203,6 +237,7 @@ int main()
         else if (firstCommand.compare("new") == 0 && commands.size() == 1)
         {
             wordList.clear();
+            isLoaded = false;
         }
 
         // The "end" command resets the word list to its original (empty) state.
@@ -220,12 +255,12 @@ int main()
         // Handles invalid/bad commands.
         else
         {
-            cout << "ERROR: Invalid command”" << endl;
+            cout << "ERROR: Invalid command" << endl;
         }
 
         command = firstCommand; // enables while loop to check for the "end" command
     } while (command.compare("end") != 0);
 
-    cout << "Out of while loop" << endl; // for debugging purposes
+    // cout << "Out of while loop" << endl; // for debugging purposes
     return 0;
 }
