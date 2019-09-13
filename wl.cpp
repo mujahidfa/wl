@@ -85,12 +85,12 @@ bool isValidWord(string word)
 }
 
 /**
- * Checks if a string is a valid number and larger than 0.
+ * Checks if a string is a valid occurance i.e a number that is larger than 0.
  * 
  * @param word The string to be checked.
- * @return true if valid number, false otherwise
+ * @return true if valid occurance, false otherwise
  */
-bool isValidNumber(string word)
+bool isValidOccurance(string word)
 {
     regex validNumberRegex("[0-9]+");
 
@@ -186,7 +186,7 @@ int main()
             {
                 cout << "ERROR: Invalid command" << endl;
             }
-            else if (isValidNumber(commands[2]) == false)
+            else if (isValidOccurance(commands[2]) == false)
             {
                 cout << "ERROR: Invalid command" << endl;
             }
