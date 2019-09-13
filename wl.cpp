@@ -1,9 +1,8 @@
 //  File: wl.cpp
 //
 //  Description: Assignment #1: C++ Word Locator - CS 564 Fall 2019
-//  Student Name: Mujahid Fakhrul Anuar
 //  UW Campus ID: 9075332602
-//  email: mujahid.f.anuar@wisc.edu
+//  email: fakhrulanuar@wisc.edu
 
 #include <iostream>
 #include <string>
@@ -86,7 +85,7 @@ bool isValidWord(string word)
 }
 
 /**
- * Checks if a string is a valid number.
+ * Checks if a string is a valid number and larger than 0.
  * 
  * @param word The string to be checked.
  * @return true if valid number, false otherwise
@@ -95,7 +94,7 @@ bool isValidNumber(string word)
 {
     regex validNumberRegex("[0-9]+");
 
-    return regex_match(word, validNumberRegex);
+    return regex_match(word, validNumberRegex) && (stoi(word) > 0);
 }
 
 int main()
@@ -136,6 +135,10 @@ int main()
             }
             else
             {
+                // reset wordList everytime a valid load command is run
+                wordList.clear();
+                isLoaded = false;
+
                 string currLine;
                 int wordCount = 1;
 
