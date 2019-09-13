@@ -36,11 +36,11 @@ string removeWhitespace(string str)
 string toLowercase(string str)
 {
     int i = 0;
-    char c;
+    char temp;
     while (str[i])
     {
-        c = str[i];
-        str[i] = tolower(c);
+        temp = str[i];
+        str[i] = tolower(temp);
         i++;
     }
     return str;
@@ -57,7 +57,7 @@ vector<string> parseCommand(string command)
     vector<string> commands;
     command = removeWhitespace(command);
 
-    // regex whitespaceRegex("[\r\v\n\t\f ]+");
+    // regex whitespaceRegex("[\r\v\n\t\f ]+"); // debugging
     regex whitespaceRegex("\\s+");
     sregex_token_iterator itr(command.begin(), command.end(), whitespaceRegex, -1);
     sregex_token_iterator end;
@@ -100,7 +100,7 @@ bool isValidOccurance(string word)
 int main()
 {
     string command; // used as placeholder by getline to read commands
-    bool isLoaded = false;
+    bool isFileLoaded = false;
     unordered_multimap<string, int> wordList; // used to store all words and their position in the loaded file
 
     do
@@ -129,6 +129,7 @@ int main()
         {
             std::ifstream inputFile(commands[1], ifstream::in);
 
+            // checks if file is invalid or we cannot open the file for some reason
             if (!inputFile)
             {
                 cout << "ERROR: Invalid command" << endl;
@@ -137,7 +138,7 @@ int main()
             {
                 // reset wordList everytime a valid load command is run
                 wordList.clear();
-                isLoaded = false;
+                isFileLoaded = false;
 
                 string currLine;
                 int wordCount = 1;
@@ -164,16 +165,16 @@ int main()
                     }
                 }
 
-                isLoaded = true;
+                isFileLoaded = true; // to tell the program a file has successfully been loaded
                 inputFile.close();
             }
 
             // print line, for debugging purposes
-            // for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
-            // {
-            //     cout << itr->first << '\t';
-            //     cout << itr->second << endl;
-            // }
+            for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
+            {
+                cout << itr->first << '\t';
+                cout << itr->second << endl;
+            }
         }
 
         // The "locate" command, given a word, returns the position of the
@@ -194,36 +195,52 @@ int main()
             else
             {
                 // check if a file was loaded
-                if (isLoaded == false)
+                if (isFileLoaded == false)
                 {
                     cout << "No matching entry" << endl;
                 }
                 // if a file was loaded, then we can do our search
                 else
                 {
-                    int occurance = stoi(commands[2]);
-                    int count = 1;
+                    int userInputtedOccurance = stoi(commands[2]); /// get the user-inputted nth occurance for the searched word
+                    int currPosition = 1; // to keep track of the current position of the iterator
 
                     unordered_multimap<string, int>::iterator itr = wordList.find(commands[1]);
                     if (itr != wordList.end())
-                    {
+                    { 
+                        // get how many times does the searched word appear in the text
+                        int wordCountInText = wordList.count(commands[1]);
+                        
                         while (itr != wordList.end())
-                        {
-                            // if not found matching occurance
-                            if (count > wordList.count(commands[1]))
+                        {   
+                            // If not found matching occurance.
+                            //
+                            // Explanation: 
+                            //  When the current position of the iterator exceeds the number 
+                            //  of times the word actually appears in the text, that tells us that
+                            //  the nth occurance that the user requested is more than the amount
+                            //  of times the word has appeared/occured in the text. Which tells us
+                            //  that the word does not exist in the nth occurance 
+                            //  (specified in userInputtedOccurance).
+                            if (currPosition > wordCountInText)
                             {
                                 cout << "No matching entry" << endl;
                                 break;
                             }
 
-                            // if found matching occurance
-                            if (count == occurance)
+                            // If found matching occurance.
+                            //
+                            // Explanation:
+                            //  When the current position of the iterator matches the nth occurance
+                            //  that the user inputted, that means we have found the nth appearence
+                            //  of the word!
+                            if (currPosition == userInputtedOccurance)
                             {
                                 // cout << itr->first << " "; // for debugging purposes
                                 cout << itr->second << endl;
                                 break;
                             }
-                            count++;
+                            currPosition++;
                             itr++;
                         }
                     }
@@ -240,7 +257,7 @@ int main()
         else if (firstCommand.compare("new") == 0 && commands.size() == 1)
         {
             wordList.clear();
-            isLoaded = false;
+            isFileLoaded = false;
         }
 
         // The "end" command resets the word list to its original (empty) state.
