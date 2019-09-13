@@ -5,6 +5,7 @@
 //  email: fakhrulanuar@wisc.edu
 
 #include <string>
+#include <vector>
 using namespace std;
 
 /**

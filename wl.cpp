@@ -172,11 +172,11 @@ int main()
             }
 
             // print line, for debugging purposes
-            for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
-            {
-                cout << itr->first << '\t';
-                cout << itr->second << endl;
-            }
+            // for (unordered_multimap<string, int>::iterator itr = wordList.begin(); itr != wordList.end(); itr++)
+            // {
+            //     cout << itr->first << '\t';
+            //     cout << itr->second << endl;
+            // }
         }
 
         // The "locate" command, given a word, returns the position of the
@@ -213,54 +213,65 @@ int main()
                         int userInputtedOccurance = stoi(commands[2]);     // Get the user-inputted nth occurance for the searched word
                         int currItrPosition = 1;                           // To keep track of the current position of the iterator
 
-                        set<int> positionList;
-
-                        // Put found values in a list so that we can sort them
-                        while (wordItr != wordList.end() && currItrPosition <= wordCountInText)
+                        // If the requested nth occurance is larger than the actual number of words available,
+                        //  then it's an error.
+                        if (userInputtedOccurance > wordCountInText)
                         {
-                            positionList.insert(wordItr->second);
-                            currItrPosition++;
-                            wordItr++;
+                            cout << "No matching entry" << endl;
                         }
-
-                        currItrPosition = 1; // reset the currItrPosition so that we can reuse the same variable in a different iterator
-
-                        set<int>::iterator positionItr = positionList.begin();
-
-                        while (positionItr != positionList.end())
+                        else
                         {
-                            // If not found matching occurance.
-                            //
-                            // Explanation:
-                            //  When the current position of the iterator exceeds the number
-                            //  of times the word actually appears in the text, that tells us that
-                            //  the nth occurance that the user requested is more than the amount
-                            //  of times the word has appeared/occured in the text. Which tells us
-                            //  that the word does not exist in the nth occurance
-                            //  (specified in userInputtedOccurance).
-                            if (currItrPosition > wordCountInText)
+                            set<int> positionList;
+
+                            // Put found values in a list so that we can sort them
+                            while (wordItr != wordList.end() && currItrPosition <= wordCountInText)
                             {
-                                cout << "No matching entry" << endl;
-                                break;
+                                positionList.insert(wordItr->second);
+                                currItrPosition++;
+                                wordItr++;
                             }
 
-                            // If found matching occurance.
-                            //
-                            // Explanation:
-                            //  When the current position of the iterator matches the nth occurance
-                            //  that the user inputted, that means we have found the nth appearence
-                            //  of the word!
-                            if (currItrPosition == userInputtedOccurance)
-                            {
-                                // cout << itr->first << " "; // for debugging purposes
-                                cout << *positionItr << endl;
-                                break;
-                            }
-                            currItrPosition++;
-                            positionItr++;
-                        }
+                            currItrPosition = 1; // reset the currItrPosition so that we can reuse the same variable in a different iterator
 
-                        positionList.clear(); // reset the ordered list
+                            set<int>::iterator positionItr = positionList.begin();
+
+                            while (positionItr != positionList.end())
+                            {
+                                // NOTE: this may be removed because this has been addressed above.
+                                //
+                                // If not found matching occurance.
+                                //
+                                // Explanation:
+                                //  When the current position of the iterator exceeds the number
+                                //  of times the word actually appears in the text, that tells us that
+                                //  the nth occurance that the user requested is more than the amount
+                                //  of times the word has appeared/occured in the text. Which tells us
+                                //  that the word does not exist in the nth occurance
+                                //  (specified in userInputtedOccurance).
+                                if (currItrPosition > wordCountInText)
+                                {
+                                    cout << "No matching entry" << endl;
+                                    break;
+                                }
+
+                                // If found matching occurance.
+                                //
+                                // Explanation:
+                                //  When the current position of the iterator matches the nth occurance
+                                //  that the user inputted, that means we have found the nth appearence
+                                //  of the word!
+                                if (currItrPosition == userInputtedOccurance)
+                                {
+                                    // cout << itr->first << " "; // for debugging purposes
+                                    cout << *positionItr << endl;
+                                    break;
+                                }
+                                currItrPosition++;
+                                positionItr++;
+                            }
+
+                            positionList.clear(); // reset the ordered list
+                        }
                     }
                     else
                     {
