@@ -83,6 +83,20 @@ vector<string> parseText(string command)
     return text;
 }
 
+bool isValidWord(string word)
+{
+    regex validWordRegex("[a-zA-Z'0-9]+");
+
+    return regex_match(word, validWordRegex);
+}
+
+bool isValidOccurance(string word)
+{
+    regex validOccuranceRegex("[0-9]+");
+
+    return regex_match(word, validOccuranceRegex);
+}
+
 int main()
 {
     string command; // used by cin to read commands
@@ -96,8 +110,7 @@ int main()
         vector<string> commands = parseCommand(command);
 
         // debugging purposes //
-        int i = 0;
-        for (i = 0; i < commands.size(); i++)
+        for (int i = 0; i < commands.size(); i++)
         {
             cout << "Command " << i << ": |" << commands[i] << "|" << endl;
         }
@@ -112,6 +125,25 @@ int main()
         }
         else if (firstCommand.compare("locate") == 0 && commands.size() == 3)
         {
+            if (isValidWord(commands[1]) == true)
+            {
+                cout << "Word is valid" << endl;
+            }
+            else
+            {
+                cout << "ERROR: Word not valid!!" << endl;
+            }
+            if (isValidOccurance(commands[2]) == true)
+            {
+                cout << "Occurance is valid" << endl;
+            }
+            else
+            {
+                cout << "ERROR: Occurance not valid!!" << endl;
+            }
+            // if (isLoaded == false)
+            // {
+            // }
         }
         else if (firstCommand.compare("new") == 0 && commands.size() == 1)
         {
