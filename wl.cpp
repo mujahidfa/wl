@@ -10,6 +10,7 @@
 #include <regex>
 #include <fstream> // std::ifstream
 #include <unordered_map>
+#include <set>
 using namespace std;
 
 /**
@@ -203,16 +204,30 @@ int main()
                 // if a file was loaded, then we can do our search
                 else
                 {
-                    int userInputtedOccurance = stoi(commands[2]); // get the user-inputted nth occurance for the searched word
-                    int currPosition = 1;                          // to keep track of the current position of the iterator
+                    unordered_multimap<string, int>::iterator wordItr = wordList.find(commands[1]);
 
-                    unordered_multimap<string, int>::iterator itr = wordList.find(commands[1]);
-                    if (itr != wordList.end())
+                    // true if word is found in the word bank
+                    if (wordItr != wordList.end())
                     {
-                        // get how many times does the searched word appear in the text
-                        int wordCountInText = wordList.count(commands[1]);
+                        int wordCountInText = wordList.count(commands[1]); // Get how many times does the searched word appear in the text
+                        int userInputtedOccurance = stoi(commands[2]);     // Get the user-inputted nth occurance for the searched word
+                        int currItrPosition = 1;                           // To keep track of the current position of the iterator
 
-                        while (itr != wordList.end())
+                        set<int> positionList;
+
+                        // Put found values in a list so that we can sort them
+                        while (wordItr != wordList.end() && currItrPosition <= wordCountInText)
+                        {
+                            positionList.insert(wordItr->second);
+                            currItrPosition++;
+                            wordItr++;
+                        }
+
+                        currItrPosition = 1; // reset the currItrPosition so that we can reuse the same variable in a different iterator
+
+                        set<int>::iterator positionItr = positionList.begin();
+
+                        while (positionItr != positionList.end())
                         {
                             // If not found matching occurance.
                             //
@@ -223,7 +238,7 @@ int main()
                             //  of times the word has appeared/occured in the text. Which tells us
                             //  that the word does not exist in the nth occurance
                             //  (specified in userInputtedOccurance).
-                            if (currPosition > wordCountInText)
+                            if (currItrPosition > wordCountInText)
                             {
                                 cout << "No matching entry" << endl;
                                 break;
@@ -235,15 +250,17 @@ int main()
                             //  When the current position of the iterator matches the nth occurance
                             //  that the user inputted, that means we have found the nth appearence
                             //  of the word!
-                            if (currPosition == userInputtedOccurance)
+                            if (currItrPosition == userInputtedOccurance)
                             {
                                 // cout << itr->first << " "; // for debugging purposes
-                                cout << itr->second << endl;
+                                cout << *positionItr << endl;
                                 break;
                             }
-                            currPosition++;
-                            itr++;
+                            currItrPosition++;
+                            positionItr++;
                         }
+
+                        positionList.clear(); // reset the ordered list
                     }
                     else
                     {
