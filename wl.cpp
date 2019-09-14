@@ -64,10 +64,26 @@ vector<string> parseCommand(string command)
     sregex_token_iterator itr(command.begin(), command.end(), whitespaceRegex, -1);
     sregex_token_iterator end;
 
-    while (itr != end)
+    // if loading a file, do not lowercase the filename or directory
+    if (toLowercase(itr->str()).compare("load") == 0)
     {
+        // only lowercase the "load" keyword
         commands.push_back(toLowercase(itr->str()));
         *itr++;
+
+        while (itr != end)
+        {
+            commands.push_back(itr->str());
+            *itr++;
+        }
+    }
+    else
+    {
+        while (itr != end)
+        {
+            commands.push_back(toLowercase(itr->str()));
+            *itr++;
+        }
     }
 
     return commands;
